@@ -1,12 +1,18 @@
-## TEXT
-
+## Finding the best hospital in a state
+library(readr)
+library(dplyr)
 
 best <- function(state, outcome) {
-    ## EXPLAIN ARGS
+    # Find the baste hospital for a certain outcome in a certain state
+    #
+    # Args:
+    #   state is the two-letter abbreviation of US states
+    #   outcome is the 30-day mortality rate of certain conditions
+    #       allowed outcomes are: heart attack, heart failure, pneumonia
     my_msg <- NULL
     my_msg <- checkArgs(state, outcome)
         if (!is.null(my_msg)) {
-        return(message(my_msg))
+        stop(my_msg)
         }
     f <- read_csv("outcome-of-care-measures.csv", 
                   # n_max = 10, # for test purposes
@@ -32,28 +38,30 @@ best <- function(state, outcome) {
     return(f)
 }
 
-checkArgs <- function(s="XX", o="Herz") {
-    myState <- s
-    myOutcome <- o
+checkArgs <- function(myState, myOutcome) {
+    # check if arguments are allowed
+    # caller function is best()
+    # 
+    # Args:
+    #   myState: has to be one of the two letter abbreviations for US states
+    #   myOutcome: one of three condition, defined in allowed_outcome below
     msg <- NULL
-    outcome <- c("heart attack", "heart failure", "pneumonia")
+    allowed_outcome <- c("heart attack", "heart failure", "pneumonia")
     if (!(myState %in% state.abb)) {
-        msg <- paste0("\"Error in best(\"", myState, "\", \"", myOutcome, "\") : invalide state\"")
-    }   else if (!(myOutcome %in% outcome)) {
-        msg <- paste0("\"Error in best(\"", myState, "\", \"", myOutcome, "\") : invalide outcome\"")
+        msg <- "invalide state"
+    }   else if (!(myOutcome %in% allowed_outcome)) {
+        msg <- "invalide outcome"
     }
     return(msg)
 } 
 
-
-# m <- checkArgs("BB", "heart failure")
-
+# test data
 result1 <- best("TX", "heart attack")
 result2 <- best("TX", "heart failure")
 result3 <- best("MD", "heart attack")
 result4 <- best("MD", "pneumonia")
-result5 <- best("BB", "heart attack")
-result6 <- best("NY", "hert attack")
+# result5 <- best("BB", "heart attack") # throws error message via stop function
+# result6 <- best("NY", "hert attack")  # throws error message via stop function
 
 
 
